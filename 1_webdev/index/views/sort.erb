@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+    <title> <%=@title %></title>
+</head>
+
+<body>
+    <div>
+        <a href = "/">List of Indexes</a>
+        
+        <ul>
+          <%@arr.each do |path| %>
+              <li> 
+                  <a href="<%=path.split("/").last %>">
+                      <%= path %>
+                  </a>
+                  <a href="?sortorder=a"> Ascending</a>
+                  <a href="?sortorder=d"> Desceding</a>
+              </li>
+          <% end %>
+        </ul>
+    </div>
+</body>
+</html>
+
+
+<!-- #Dir.glob("Applications/*") -->

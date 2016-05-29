@@ -2,10 +2,15 @@ require "sinatra"
 require "sinatra/reloader" if development?
 require "tilt/erubis"
 require "sinatra/content_for"
+require "pry"
 
 configure do 
   enable :sessions #activate
   set :session_secret, 'secret' #set secret the name, every application works after restarting
+end
+
+configure do
+  set :erb, :escape_html => true
 end
 
 helpers do # both accessible in view and rb. if not put in views, dont need to be put here
@@ -25,6 +30,7 @@ helpers do # both accessible in view and rb. if not put in views, dont need to b
   end
   
   def todos_count(list)
+    
      list[:todos].size
   end
   
@@ -43,16 +49,16 @@ helpers do # both accessible in view and rb. if not put in views, dont need to b
     # end
     # incomplete_lists.each { |id, list| yield list, id }
     # complete_lists.each { |id, list| yield list, id }
-     incomplete_lists.each { |list| yield list, lists.index(list) }
-     complete_lists.each { |list| yield list, lists.index(list) }
+     incomplete_lists.each(&block) #{ |list| yield list, lists.index(list) }
+     complete_lists.each(&block) #{ |list| yield list, lists.index(list) }
     # incomplete_lists.each(&block)
     # complete_lists.each(&block)
   end
   
   def order_todos(todos, &block)
     complete_todos, incomplete_todos = todos.partition { |todo| todo[:completed] }
-    incomplete_todos.each { |todo| yield todo, todos.index(todo) }
-    complete_todos.each { |todo| yield todo, todos.index(todo) }
+    incomplete_todos.each(&block) #{ |todo| yield todo, todos.index(todo) }
+    complete_todos.each(&block) #{ |todo| yield todo, todos.index(todo) }
     # incomplete_todos= {}
     # complete_todos = {}
     
@@ -69,6 +75,19 @@ helpers do # both accessible in view and rb. if not put in views, dont need to b
     # incomplete_todos.each(&block)
     # complete_todos.each(&block)
     
+  end
+
+  def h(content)
+    Rack::Utils.escape_html(content)
+  end
+
+  def load_list(id)
+    list = session[:lists].find{ |list| list[:id] == id }
+    return list if list
+  
+    session[:error] = "The specified list was not found."
+    redirect "/lists"
+    halt
   end
 end
 
@@ -109,6 +128,11 @@ def error_for_todo_name(todo)
   end
 end
 
+def next_element_id(elements)
+  max = elements.map { |element| element[:id] }.max || 0
+  max + 1
+end
+
 # create a new list
 post "/lists" do
   list_name = params[:list_name].strip
@@ -117,7 +141,9 @@ post "/lists" do
     session[:error] = error
     erb :new_list, layout: :layout
   else
-    session[:lists] << {name: list_name, todos: []}
+     
+    id = next_element_id(session[:lists])
+    session[:lists] << {id: id, name: list_name, todos: []}
     session[:success] = "The list has been created."
     redirect "/lists"
   end
@@ -127,15 +153,16 @@ end
 
 # view all the todos of a list
 get "/lists/:number" do
+  
    @list_number = params[:number].to_i
-   @list =  session[:lists][@list_number]
+   @list =  load_list(@list_number)
    erb :to_do_list, layout: :layout
 end
 
 # edit an existing todo list
 get "/lists/:number/edit" do
    number = params[:number].to_i
-   @list = session[:lists][number]
+   @list =  load_list(number)
    erb :edit_list, layout: :layout
 end
 
@@ -144,7 +171,7 @@ post "/lists/:number" do
   list_name = params[:list_name].strip
   error = error_for_list_name(list_name)
   number = params[:number].to_i
-  @list = session[:lists][number]
+  @list =  load_list(number)
   
   if error
     session[:error] = error
@@ -168,23 +195,32 @@ end
 # delete a list
 post '/lists/:number/destroy' do
   number = params[:number].to_i
-  session[:lists].delete_at(number)
-  session[:success] = "The list has been deleted"
-  redirect "/lists"
+  session[:lists].reject!{ |list| list[:id] == number }
+   if env["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest"
+    "/lists"
+    # redirect "/lists"
+  else
+    session[:success] = "The list has been deleted"
+    redirect "/lists"
+  end
+  
 end
+
+
+
 
 # create a todo for a list
 post "/lists/:list_number/todo" do
     
     @list_number = params[:list_number].to_i
     todo_name = params[:to_do_name].strip
-    @list = session[:lists][@list_number]
+    @list =  load_list(@list_number)
     error = error_for_todo_name(todo_name)
     if error
         session[:error] = error
-        
     else
-        @list[:todos] << { name: todo_name, completed: false }
+        id = next_element_id(@list[:todos])
+        @list[:todos] << { id: id, name: todo_name, completed: false }
         session[:success] = "The todo has been added"
        
     end
@@ -193,22 +229,33 @@ post "/lists/:list_number/todo" do
 end
 
 # delete a todo from a list
-post "/lists/:number/todo/:index/destroy" do
+post "/lists/:number/todo/:id/destroy" do
   @list_number = params[:number].to_i
-  index = params[:index].to_i
-  @list = session[:lists][@list_number]
-  @list[:todos].delete_at(index)
-  session[:success] = "The todo has been deleted."
-  redirect "/lists/#{@list_number}"
+  todo_id = params[:id].to_i
+  @list =  load_list(@list_number)
+  @list[:todos].reject! { |todo| todo[:id] == todo_id }
+  if env["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest"
+    status 204 # no content
+  else
+    session[:success] = "The todo has been deleted."
+    redirect "/lists/#{@list_number}"
+  end
 end
 
 # update the status of a todo
-post "/lists/:number/todo/:index" do
+post "/lists/:number/todo/:id" do
   @list_number = params[:number].to_i
-  index = params[:index].to_i
-  @list = session[:lists][@list_number]
+  todo_id = params[:id].to_i
+  @list =  load_list(@list_number)
   is_completed = params[:completed] == 'true'
-  @list[:todos][index][:completed] = is_completed
+
+  # todo = @list[:todos].find { |todo| todo[:id] == todo_id }
+  # todo[:completed] = is_completed
+  @list[:todos].each do |todo|
+    todo[:completed] = is_completed if todo[:id] == todo_id
+  end
+  # @list[:todos][index][:completed] = is_completed
+ 
   session[:success] = "The todo has been updated."
   redirect "/lists/#{@list_number}"
 end
@@ -216,7 +263,7 @@ end
 # complete all todos
 post "/lists/:number/complete_all" do
   @list_number = params[:number].to_i
-  @list = session[:lists][@list_number]
+  @list =  load_list(@list_number)
   @list[:todos].each {|todo| todo[:completed] = true}
   session[:success] = "All the todos of this list have been completed."
   redirect "/lists/#{@list_number}"

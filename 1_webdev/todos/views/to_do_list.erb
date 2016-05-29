@@ -1,4 +1,3 @@
-
 <section id= "todos" class="<%= list_class(@list) %>"> <!--less code more explicit-->
   
 <header>
@@ -16,20 +15,20 @@
 
 <!--print out each todo -->
 <ul>
-  <% order_todos(@list[:todos]) do |todo, index| %>
+  <% order_todos(@list[:todos]) do |todo| %>
     <% if todo[:completed] %>
       <li class= "complete">
     <% else %>
       <li>
     <% end %>
     <!--complete todo -->
-      <form action="/lists/<%= @list_number %>/todo/<%= index %>" method="post" class="check">
+      <form action="/lists/<%= @list_number %>/todo/<%= todo[:id] %>" method="post" class="check">
         <input type="hidden" name="completed" value="<%= !todo[:completed] %>" />  <!--send data to server; it is possible webpage and server are not identical -->
         <button type="submit">Complete</button>
       </form>
     <!--delete todo -->
-      <h3><%= todo[:name] %></h3>
-        <form action="/lists/<%= @list_number %>/todo/<%= index %>/destroy" method="post" class="delete">
+      <h3><%= h todo[:name] %></h3>
+        <form action="/lists/<%= @list_number %>/todo/<%= todo[:id] %>/destroy" method="post" class="delete">
             <button type="submit">Delete</button>
         </form>
     </li>

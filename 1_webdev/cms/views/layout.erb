@@ -1,0 +1,12 @@
+<% if session[:error] %>
+  <p><%= session.delete(:error) %></p>
+<% end %>
+
+<ul>
+    <%@name.each do |name|%>
+        <% refined_name = name.split("/").last %>
+        <a href = "/<%=refined_name %>" >
+            <li> <%=refined_name %> </li>
+        </a>
+    <% end %>
+</ul>

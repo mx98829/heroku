@@ -1,0 +1,470 @@
+ HyperText Markup Language. Hypertext
+
+
+ <!DOCTYPE html>
+<html>hello how are you doing?
+</html>
+
+
+Things inside <>s are called tags.
+Tags nearly always come in pairs: an opening tag and a closing tag.
+Example of opening tag: <html>
+Example of closing tag: </html>
+
+
+Everything in our HTML file will go between the opening <html> and closing </html> tags.
+
+There are always two parts to an HTML file: the head and the body. Let's start with the head.
+The head contains information about your HTML file, like its title. The title is what we see in the browser's title bar or page tab.
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>
+My webpage
+</title>
+</head>
+</html>
+
+
+The body is where you put your content, such as text, images, and links. The content in the body is what will be visible on the actual page.
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>My webpage</title>
+    </head>
+    <body>
+    <p>wow</p>
+    <p>yeah</p>
+    </body>
+</html>
+
+
+The next step is to give our paragraphs headings using heading tags. Let's start with the <h1> tag. The content between this tag will be the biggest!
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>
+      Headings & Paragraphs
+    </title>
+    
+  </head>
+  <body>
+  <h1>  
+    hello
+    
+  </h1>
+  <p> how are you </p>
+  <p> Im fine thank you </p>
+  </body>
+</html>
+
+<h1> - The CEO
+<h2> - VP
+<h3> - Director
+<h4> - Middle management
+<h5> - Lowly assistant
+<h6> - Gets coffee for everyone
+
+
+HTML is used to give websites structure.
+We open HTML files using a browser, and the browser renders (shows us) the file.
+HTML files have a <head> and a <body> (just like you!)
+In the head, we have the <title> tags, and we use these to specify the webpage's name.
+How to make headings and paragraphs.
+
+<a href="http://www.codecademy.com">My Favorite Site!</a>
+First, there's an opening <a> tag and that tag has an attribute called href. The href value tells your link where you want it to go
+Then you have a description of your link between your opening <a> and your closing </a> tags. This is what you will be able to click on.
+Finally, you have your closing </a> tag.
+
+We use an image tag, like so: <img>. This tag is a bit different from the others. Instead of putting the content between the tags, you tell the tag where to get the picture using src. It's also different because there is no ending tag. It has / in the tag to close it: <img src="url" />.
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+  </head>
+  <body>
+    <img src="https://s3.amazonaws.com/codecademy-blog/assets/f3a16fb6.jpg" />
+  </body>
+</html>
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+  </head>
+  <body>
+    <img src=https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png />
+    <img src =http://www.tccnh.org/wp-content/uploads/2013/07/Mothers_Day-1024x768.jpg />
+    <img src =https://s3.amazonaws.com/codecademy-blog/assets/ninja_zpsa5dbe37a.jpg />
+
+  </body>
+</html>
+
+<a href="http://www.codecademy.com/">
+    <img src="https://s3.amazonaws.com/codecademy-blog/assets/f3a16fb6.jpg"/>
+
+    Placing one HTML tag inside of another is called nesting.
+</a>
+
+
+indentation
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+  </head>
+  <body>
+  </body>
+</html>
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Lists</title>
+  </head>
+  <body>
+    <h1>List of my favorite things</h1>
+    <ol>
+      <li>Raindrops on roses</li>
+      <li>Whiskers on kittens</li>
+      <li>Bright copper kettles</li>
+      <li>Warm woolen mittens</li>
+    </ol>
+    
+    
+  </body>
+</html>
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Unordered Lists</title>
+  </head>
+  <body>
+      <h1> some random thoughts</h1>
+      <p> today's thoughts</p>
+      <ul>
+          <li>i can sing</li>
+          <li>I can cook</li>
+          <li>I can run</li>
+          <li>i can read</li>
+      </ul>
+  </body>
+</html>
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Nested lists</title>
+  </head>
+  <body>
+    <ol>
+      <li>Dad's interests
+        <ul>
+          <li>football</li>
+          <li>knitting</li>
+        </ul>
+      </li>
+      <li>Mom's interests
+        <ul>
+          <li>hating football</li>
+          <li>skydiving</li>
+        </ul>
+      </li>
+    </ol>
+    
+    <ul>
+        <li>favorite boys names</li>
+            <ol>
+                <li>tom</li>
+                <li>peter</li>
+                <li>Jackson</li>
+            </ol>
+        <li>favorite girls names</li>
+            <ol>
+                <li>mary</li>
+                <li>emma</li>
+                <li>amy</li>
+            </ol>
+    </ul>
+  </body>
+</html>
+
+
+But it is possible to do some inline CSS. This simply means we can do some styling in our HTML file without worrying about a separate CSS file! We'll learn this first because it will make learning CSS a lot easier later.
+
+<!--Make me into a comment.-->
+
+
+
+We can give tags more instructions by including attributes in the opening tag. An attribute is simply a characteristic or some description for the content in the element. You saw this with src in <img> and href in <a>.
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>First font size change</title>
+  </head>
+  <body>
+    <p style="font-size: 12px"> Some text for you to make tiny! </p>
+    <p style="font-size: 20px"> Some text for you to make normal size!</p>
+    <p style="font size: 40px"> Some text for you to make super big!</p>
+  </body>
+</html>
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Changing the colors!</title>
+  </head>
+  <body>
+    <h1 style="color:green; font-size:16px">Big Heading</h1>
+      <p style="color:violet">A giant bear and a little duck were friends.</p>
+      <p style="color:red; font-size:10px">But the bear got hungry and ate the duck.</p>
+  </body>
+</html>
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Loving the font changes</title>
+  </head>
+  <body>
+    <h1 style="font-family: Arial">Big title</h1>
+     <ol>
+      <li style="font-family: Arial">This item is big Arial.</li>
+      <li style="font-size: 12px; font-family: Verdana">This item is medium Verdana.</li>
+      <li style="font-size: 10px; font-family: Impact">This item is small Impact.</li>
+     </ol>
+  </body>
+</html>
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sexy background color!</title>
+  </head>
+  <body>
+    <h3 style="text-align:center">Favorite Football Teams</h3>
+      <ol>
+        <li style="text-align:left">The Hawthorn Football Club</li> 
+        <li style="text-align:center">San Franscisco 49ers</li>
+        <li style="text-align:right">Barcelona FC</li>
+      </ol>     
+  </body>
+</html>
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Viva La Revolution!</title>
+  </head>
+  <body>
+    <p>Do you hear the people <strong>sing?</strong></p>
+    <p>No I don't. I'm <strong>too</strong> busy eating cake.</p>
+  </body>
+</html>
+
+
+Surround the word or words with the opening tag <em> and closing tag </em>.
+
+Make ordered and unordered lists
+Change the color, size and type of font
+Add comments to our HTML file
+Change the page's background color
+Align text
+Bold and italicize text
+
+A table is just a bunch of information arranged in rows and columns.
+
+We use the <tr> tag to create a table row. We'll learn how to create columns shortly, and everything will start to come together. (You don't really create columns in <table>s: instead, you tell each row how many cells to have, and that determines your number of columns).
+
+
+<html>
+    <head>
+        <title>Table Time</title>
+    </head>
+    
+    <body>
+        
+        <table border="1px">
+            <tr>
+                <td>One</td>
+            </tr>
+                <td>Two</td>
+            <tr>
+                <td>Three</td>
+            </tr>
+            
+            <tr>
+                
+            </tr>
+        </table>
+        
+    </body>
+
+</html>
+
+
+The <head> HTML tag contains information about a web page (e.g. its title) and the <body> tag contains the contents of the web page. In the same way, the <thead> tag can be thought of as containing information about a table and the <tbody> tag containing the actual tabular data.
+
+Instructions
+
+
+<html>
+    <head>
+        <title>Table Time</title>
+    </head>
+    
+    <body>
+        
+        <table border="1px">
+            <thead>
+                <tr>
+                    <th>
+                    Famous monster
+                    </th>
+                    <th>
+                    Birth year
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>King Kong</td>
+                    <td>1933</td>     
+                </tr>
+                
+                <tr>
+                    <td>Dracula</td>
+                    <td>1897</td>
+                </tr>
+                
+                <tr>
+                    <td>Bride of Frankenstein</td>
+                    <td>1935</td>
+                </tr>
+            </tbody>
+        </table>
+        
+    </body>
+
+</html>
+
+<th colspan="3">3 columns across!</th>
+
+
+One of the most versatile structure tags available to you is the <div></div> tag. Short for "division," <div> allows you to divide your page into containers (that is, different pieces). This will come in handy when you begin learning CSS in the next unit: you'll be able to style different parts of your website individually!
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Result</title>
+  </head>
+  <body>
+    <div style="width:50px; height:50px; background-color:red"></div>
+    <div style="width:50px; height:50px; background-color:blue"></div>
+    <div style="width:50px; height:50px; background-color:green"></div>
+      <div style="width:50px; height:50px; background-color: yellow"></div> 
+  </body>
+</html>
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+  </head>
+  <body>
+    <p>This text is black, except for the word <span style="color: red">red!</span></p>
+  </body>
+</html>
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="stylesheet.css" />
+    <title>My Photo Page</title>
+  </head>
+  <body>
+  <table>
+      <thead>
+         <th colspan=3>
+         Animals
+         </th>
+      </thead>
+      <tr>
+          <td>
+              <a href="http://a-z-animals.com/animals/">
+                  <img src="http://a-z-animals.com/media/animals/images/180x170/african_bush_elephant14.jpg"/>
+              </a>
+          </td>
+          <td>
+              <a href="http://a-z-animals.com/animals/">
+                  <img src="http://a-z-animals.com/media/animals/images/470x370/barracuda5.jpg"/>
+              </a>
+         </td>
+          <td>
+              <a href="http://a-z-animals.com/animals/">
+                  <img src="http://a-z-animals.com/media/animals/images/470x370/beaver3.jpg"/>
+              </a>
+          </td>
+      </tr>
+      <tr> 
+          <td>
+              <a href="http://a-z-animals.com/animals/">
+                  <img src="http://a-z-animals.com/media/animals/images/470x370/cheetah.jpg"/>
+              </a>
+          </td>
+          <td>
+              <a href="http://a-z-animals.com/animals/">
+               <img src="http://a-z-animals.com/media/animals/images/470x370/cat12.jpg"/>
+               </a>
+         </td>
+          <td>
+              <a href="http://a-z-animals.com/animals/">
+                  <img src="http://a-z-animals.com/media/animals/images/180x170/bison6.jpg"/>
+             </a>
+         </td>
+      </tr>
+      <tr>
+          <td>
+              <a href="http://a-z-animals.com/animals/">
+                  <img src="http://a-z-animals.com/media/animals/images/180x170/bear2.jpg"/>
+              </a>
+          </td>
+          <td>
+              <a href="http://a-z-animals.com/animals/">
+                  <img src="http://a-z-animals.com/media/animals/images/180x170/cow11.jpg"/>
+               </a>
+          </td>
+          <td>
+              <a href="http://a-z-animals.com/animals/">
+                  <img src="http://a-z-animals.com/media/animals/images/180x170/duck4.jpg"/>
+              </a>
+          </td>
+      </tr>
+  </table>
+  </body>
+</html>
+
+
+CSS (which stands for Cascading Style Sheets) is a language used to describe the appearance and formatting of your HTML.
+We say these style sheets are cascading because the sheets can apply formatting when more than one style applies. For instance, if you say all paragraphs should have blue font, but you specifically single out one paragraph to have red font, CSS can do that! (We'll talk more about cascading in section four.)
+
+There are two ways to put CSS in one place. This first is to put your CSS between <style></style> tags, right in the same file as your HTML. These <style> tags go inside the <head></head> of your webpage; check out the example in the editor to the right.
