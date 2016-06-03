@@ -1,0 +1,46 @@
+<ul>
+  <%@name.each do |name|%>
+    <li>
+       
+      <a href = "/<%=name %>" > <%=name %> </a>
+       
+     <form id = "inline" action = "/<%=name %>/edit" method = "get">
+        <button type = "submit"> edit </button>
+     </form>
+     
+     <form class = "duplicate" id = "inline" action = "/<%=name %>/duplicate" method = "post">
+        <button type = "submit"> duplicate </button>
+     </form>
+     
+   <% if session[:user]%>
+      <form class = "delete" id = "inline" action="/<%= name %>/destroy" method = "post">
+        <button type="submit" class="delete">delete</button>
+      </form>
+   <% end %>
+      
+    </li>
+  <% end %>
+  
+  <p></p>
+  
+  <div>
+    <p id = "inline"><a href = "/new" > New Document</a></p>
+    
+     <form id = "inline" action = "/upload_image" method = "get">
+        <button type = "submit"> Upload image </button>
+     </form>
+   </div>
+  
+ <% if session[:user] %>
+    <p> 
+      <form action = "/users/signout" method = "post">
+        Signed in as <%= session[:username] %>
+        <button type="submit">Sign Out</button>
+      </form>
+    </p>
+  <% else %>
+    <form action = "/users/signin" method = "get">
+      <button type = "submit"> Sign In</button>
+    </form>
+  <% end %>
+</ul>

@@ -1,0 +1,8 @@
+<form action = "/image_upload_confirm" method = "post">
+    <label for "filename"> Please type in the name of image file you want to upload</label>
+    <input name = "filename" type = "text">
+    <button type = "submit">submit</button>
+    <p>The list of image files are: <strong><%= @list_of_images.join(", ") %> </p>
+</form>
+
+ 

@@ -1,0 +1,12 @@
+<form action="/<%=@text_name %>" method="post">
+
+    <label for="content">Edit <%=@text_name %></label>
+
+    <div>
+        <textarea name="text_content" id="content" rows="20" cols="100"> <%=@content %></textarea>
+    </div>
+  
+    <input type="submit" value="Save">
+    <a href="/<%=@text_name %>/edit">Cancel</a>
+  
+</form>

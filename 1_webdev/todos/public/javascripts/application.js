@@ -5,7 +5,7 @@ $(function(){
         event.stopPropagation();
         var ok = confirm("Are you sure? This cannot be undone!");
         if (ok) {
-            // this.submit();
+            this.submit();
             var form = $(this);
             var request = $.ajax({
                 url: form.attr("action"),
@@ -17,9 +17,8 @@ $(function(){
                 form.parent("li").remove();
                 } else if (jqXHR.status == 200) {
                     document.location = data;
-                }
+                };
             });
-        }
-    });  
-});
+        });  
 
+ 

@@ -1,12 +1,25 @@
-<% if session[:error] %>
-  <p><%= session.delete(:error) %></p>
-<% end %>
-
-<ul>
-    <%@name.each do |name|%>
-        <% refined_name = name.split("/").last %>
-        <a href = "/<%=refined_name %>" >
-            <li> <%=refined_name %> </li>
-        </a>
-    <% end %>
-</ul>
+<!doctype html>
+<html lang="en-US">
+  <head>
+      <title>cms</title>
+      <meta charset="UTF-8">
+      <link rel="stylesheet" href="/stylesheets/application.css">
+      <script type="text/javascript" src="/javascripts/jquery-2.2.4.js"></script>
+      <script type="text/javascript" src="/javascripts/application.js"></script>
+      
+  </head>
+  
+  <body>
+      <h2> File-based CMS</h2>
+      <% if session[:success] %>
+        <p class = 'message'><%= session.delete(:success)%> </p>
+      <% end %>
+      
+      <% if session[:error] %>
+        <p class ="message"><%= session.delete(:error) %></p>
+      <% end %>
+      <main>
+          <%= yield %>
+      </main>
+  </body>
+</html>

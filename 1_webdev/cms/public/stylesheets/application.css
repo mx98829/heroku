@@ -1,0 +1,14 @@
+body {
+    padding: 1em;
+    font-family:sans-serif;
+    
+}
+
+.message {
+    padding: 10px;
+    background: yellow;
+}
+
+#inline {
+  display: inline;
+}
