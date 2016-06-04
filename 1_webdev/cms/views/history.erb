@@ -1,0 +1,13 @@
+<% @history_files.sort.each do |file| %>
+
+  <li> 
+    <a href ="/<%=@file_name %>/<%= file%>">
+      <%=file %> 
+    </a>
+  </li> 
+  
+<% end %>
+
+<form action = "/" method = "get">
+  <button type = "submit"> Go back</button>
+</form>

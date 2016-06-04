@@ -19,5 +19,7 @@ p File.join(root, "test")
  
 p BCrypt::Password.create(123)
  
-FileUtils.cp("image_source/image1.md", "data/image1.md")
-   
+# FileUtils.cp("image_source/image1.md", "data/image1.md")
+# Dir.mkdir(File.join("history/", "fut"))
+
+p File.join("a", "/b")

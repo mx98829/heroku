@@ -1,5 +1,5 @@
 <ul>
-  <%@name.each do |name|%>
+  <%@name.sort.each do |name|%>
     <li>
        
       <a href = "/<%=name %>" > <%=name %> </a>
@@ -12,11 +12,17 @@
         <button type = "submit"> duplicate </button>
      </form>
      
+     
+     
    <% if session[:user]%>
       <form class = "delete" id = "inline" action="/<%= name %>/destroy" method = "post">
         <button type="submit" class="delete">delete</button>
       </form>
    <% end %>
+   
+   <form id = "inline" action = "/<%= name %>/history" method = "get">
+        <button type = "submit"> history </button>
+   </form>
       
     </li>
   <% end %>

@@ -7,6 +7,8 @@ require 'yaml'
 require 'bcrypt'
 require "fileutils"
 
+ 
+
 configure do 
   enable :sessions #activate
   set :session_secret, 'secret' #set secret the name, every application works after restarting
@@ -19,28 +21,54 @@ before do
   else
     @users = YAML.load_file("users.yaml")
   end
+  
+end
+
+def path(source)
+  if ENV["RACK_ENV"] == "test"
+    File.expand_path("../test/#{source}", __FILE__)
+  else
+    File.expand_path("../#{source}", __FILE__)
+  end
 end
 
 def data_path
-  if ENV["RACK_ENV"] == "test"
-    File.expand_path("../test/data", __FILE__)
-  else
-    File.expand_path("../data", __FILE__)
-  end
+  path("data")
+end
+
+def history_path
+  path("history")
+end
+
+def image_path
+  path("image_source")
 end
   
 helpers do
   
-  
-  
-  def  load_file_names
-    Dir.glob(File.join(data_path, "*")).map { |path| File.basename(path)}
+
+  def  load_file_names(file_path)
+    Dir.glob(File.join(file_path, "*")).map { |path| File.basename(path)}
   end
   
   def get_file_path(name)
     File.join(data_path, name)
     # root + "/#{data_path}/#{name}"
   end
+  
+  def get_history_dir_path(filename)
+    File.join(history_path, filename)
+  end
+  
+  def get_history_file_path(filename, history_file_name)
+    File.join(history_path, filename, history_file_name)
+  end
+  
+  def get_image_file_path(filename) 
+    File.join(image_path, filename)
+  end
+  
+  
   
   def check_file_exist?(name)
     file_path = get_file_path(name)
@@ -64,6 +92,17 @@ helpers do
     file = check_file_exist?(name)
     file_path = get_file_path(file)
     content = File.read(file_path)
+    if File.extname(file) == ".txt"
+      headers["Content-Type"] = "text/plain"
+      content
+    elsif File.extname(file) == ".md"
+      markdown(content)
+    end
+  end
+  
+  def load_hisotry_file_content(file, history_file_name)
+    history_file_path = get_history_file_path(file, history_file_name)
+    content = File.read(history_file_path)
     if File.extname(file) == ".txt"
       headers["Content-Type"] = "text/plain"
       content
@@ -98,7 +137,28 @@ helpers do
   #     false
   #   end
   # end
+  def put_char_on_text_name(textname, char)
+    arr = textname.split(".")
+    arr.first << char
+    arr.join(".")
+  end
   
+  def put_number_on_text_name(textname, char = "_1")
+    put_char_on_text_name(textname, char)
+  end
+  
+  def put_dup_on_text_name(textname, char = "_dup")
+    put_number_on_text_name(textname, char)
+  end
+  
+  def increment_file_number(textname)
+    arr = textname.split(".")
+    arr.map! {|x| x.split("_") }
+    num = arr.first.last.to_i + 1
+    arr.first[-1] = num.to_s
+ 
+    arr.map {|x| x.join("_")}.join(".")
+  end
 end
 
 # index page
@@ -106,26 +166,65 @@ get "/" do
   # if session[:user].empty?
   #   redirect "/users/signin"
   # else
-    @name = load_file_names
+    @name = load_file_names(data_path)
     erb :index, layout: :layout
   # end
 end
 
+# upload image
 get "/upload_image" do
-  
-  @list_of_images = Dir.glob("image_source/*").map { |file| File.basename(file)}
+  ensure_sign_in
+  @list_of_images = load_file_names(image_path)
    
   erb :upload_image, layout: :layout
 end
 
-
+# upload image confirm
 post "/image_upload_confirm" do
   file_name = params[:filename]
   file_path = get_file_path(file_name)
-  from_file_path = File.join("image_source/", file_name)
+  from_file_path = get_image_file_path(file_name)
   FileUtils.cp(from_file_path, file_path)
+  
+  # history
+  history_dir_path = get_history_dir_path(file_name)
+  Dir.mkdir(history_dir_path) if !Dir.exist?(history_dir_path)
+  
+  new_history_file_name = put_number_on_text_name(file_name)
+  history_file_path =  get_history_file_path(file_name, new_history_file_name)
+  FileUtils.cp(get_file_path(file_name),  history_file_path )
+  
   redirect "/"
 end
+
+# render the edit form
+get "/:name/edit" do
+  ensure_sign_in
+  @text_name = params[:name]
+  file_path = get_file_path(@text_name)
+  @content = File.read(file_path)
+  erb :edit_text, layout: :layout
+end
+
+# file history page
+get "/:name/history" do
+  @file_name = params[:name]
+  history_file_path = get_history_dir_path(@file_name)
+  @history_files =  load_file_names(history_file_path)
+  
+  
+  erb :history, layout: :layout
+end
+
+# history file content
+get "/:name/:history_name" do
+ 
+  @file_name = params[:name]
+  @history_file_name = params[:history_name]
+   
+  load_hisotry_file_content(@file_name, @history_file_name)
+end
+
 
 # render the new document form
 get "/new" do
@@ -136,7 +235,7 @@ end
 # add a new text name
 post "/new" do
   ensure_sign_in
-  @name = load_file_names
+  @name = load_file_names(data_path)
   text_name = params[:text_name].to_s
    
   if text_name.empty?
@@ -147,9 +246,21 @@ post "/new" do
     session[:error] = "A file extention is required."
     status 422
     erb :new_text, layout: :layout
+  elsif @name.include?(text_name)
+    session[:error] = "The file name exists. Please put a different file name"
+    status 422
+    erb :new_text, layout: :layout
+  
   else
     File.new(get_file_path(text_name),  "w+")
     # File.write(file_path, "")
+    # history
+    history_dir_path = get_history_dir_path(text_name)
+    Dir.mkdir(history_dir_path) if Dir.exist?(history_dir_path)
+ 
+    # history_file_path = File.join( history_dir_path, "/#{text_name}_1" )
+    # File.new(history_file_path,  "w+")
+    
     session[:success] = "#{text_name} has been created."
     redirect "/"
   end
@@ -164,28 +275,49 @@ get "/:name" do
   # erb :text  # dont need to render the template and layout
 end
 
-# render the edit form
-get "/:name/edit" do
-  ensure_sign_in
-  @text_name = params[:name]
-  file_path = get_file_path(@text_name)
-  @content = File.read(file_path)
-  erb :edit_text, layout: :layout
-end
+
 
 # edit the text 
 post "/:name" do
-  
+   
   text_name = params[:name]
   new_content = params[:text_content]
+    
+  if new_content == old_content
+    session[:error] = "Please make sure you make some changes before hitting save."
+    erb :edit_text, layout: :layout
+  else
+  
   
   # File.open(get_file_path(text_name), 'w') do |f|
   #   f.write new_content
   # end
- 
-  File.write(get_file_path(text_name), new_content)
-  session[:success] = "#{text_name} has been editted."
-  redirect "/"
+  
+    File.write(get_file_path(text_name), new_content)
+    
+    #history
+     
+     # history path has any _1 file, then increment
+     
+     
+    all_history_files_of_one = load_file_names(get_history_dir_path(text_name))
+    if all_history_files_of_one.any? {|file| file.include?("_1.")}
+      
+      last_editted_file = all_history_files_of_one.last
+       
+      new_text_name = increment_file_number(last_editted_file)
+    else # create a 1 file
+      # put 1 at the end
+      new_text_name = put_number_on_text_name (text_name)
+      
+    end
+    
+    history_file_path =  get_history_file_path(text_name, new_text_name)
+    FileUtils.cp(get_file_path(text_name),  history_file_path )
+  
+    session[:success] = "#{text_name} has been editted."
+    redirect "/"
+  end
 end
 
 
@@ -241,8 +373,21 @@ post "/:name/duplicate" do
   text_name = params[:name]
 
   file_path = get_file_path(text_name)
-  new_file_path = get_file_path(text_name + "dup")
+  new_text_name = put_dup_on_text_name(text_name)
+  new_file_path = get_file_path(new_text_name)
+  
   FileUtils.cp(file_path, new_file_path)
+  
+  # history
+  history_dir_path = get_history_dir_path(new_text_name)
+  Dir.mkdir(history_dir_path) if !Dir.exist?(history_dir_path)
+
+  new_history_file_name = put_number_on_text_name(new_text_name)
+  history_file_path =  get_history_file_path(new_text_name, new_history_file_name)
+  
+  
+  FileUtils.cp(get_file_path(text_name),  history_file_path )
+  
   session[:success] = "#{text_name} has been duplicated"
   redirect "/"
 end
