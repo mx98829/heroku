@@ -1,1 +1,1 @@
-   <img src="http://www.w3schools.com/" height="42" width="42">
+ <img src="http://www.w3schools.com/" height="42" width="42">

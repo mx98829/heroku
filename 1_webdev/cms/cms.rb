@@ -283,10 +283,10 @@ post "/:name" do
   text_name = params[:name]
   new_content = params[:text_content]
     
-  if new_content == old_content
-    session[:error] = "Please make sure you make some changes before hitting save."
-    erb :edit_text, layout: :layout
-  else
+  # if new_content == old_content
+  #   session[:error] = "Please make sure you make some changes before hitting save."
+  #   erb :edit_text, layout: :layout
+  # else
   
   
   # File.open(get_file_path(text_name), 'w') do |f|
@@ -317,7 +317,7 @@ post "/:name" do
   
     session[:success] = "#{text_name} has been editted."
     redirect "/"
-  end
+  # end
 end
 
 
@@ -415,4 +415,3 @@ post "/users/signup_check" do
   end
 
 end
-
