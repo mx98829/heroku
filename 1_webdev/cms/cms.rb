@@ -15,13 +15,11 @@ configure do
 end
 
 before do
-  
-  if ENV["RACK_ENV"] == "test"
-    @users = YAML.load_file("test/users.yaml")
-  else
-    @users = YAML.load_file("users.yaml")
-  end
-  
+    if ENV["RACK_ENV"] == "test"
+      @users = YAML.load_file("test/users.yaml")
+    else
+      @users = YAML.load_file("users.yaml")
+    end
 end
 
 def path(source)
@@ -125,6 +123,7 @@ helpers do
   
   def user_valid? (password, username)
     @users.has_key?(username) && 
+    
     BCrypt::Password.new(@users[username]) == password
     # BCrypt::Password.create(password_typed) == @user[username]
   end
@@ -170,6 +169,72 @@ get "/" do
     erb :index, layout: :layout
   # end
 end
+##################################################################################
+# user sign up
+get "/users/signup" do 
+  erb :sign_up, layout: :layout
+end
+
+post "/users/signup_check" do
+  if params[:password] != params[:password_again]
+     session[:error] = "The passwords you put in are not the same."
+     status 422
+     erb :sign_up, layout: :layout
+  elsif params[:password].length < 6
+     session[:error] = "The passwords must be at least 6 characters long."
+     status 422
+     erb :sign_up, layout: :layout
+  elsif params[:username].strip.empty?
+     session[:error] = "Please put in a valid username."
+     status 422
+     erb :sign_up, layout: :layout
+  else
+     
+    bcrypt_password = BCrypt::Password.create(params[:password])
+    if ENV["RACK_ENV"] == "test"
+      @users[params[:username]] = bcrypt_password
+    else
+      @users[params[:username]] = bcrypt_password
+    end
+    
+    redirect "/users/signin"
+  end
+end
+
+# render the sign in page
+get "/users/signin" do
+  
+  erb :sign_in, layout: :layout
+end
+
+# sign in check
+post "/users/signin" do
+  # users = {"admin" => "secret", "kathy" => 123}
+   user_name_input = params[:username]
+   password_input = params[:password]
+   
+    
+   if user_valid?(password_input, user_name_input)
+     
+      session[:user] = user_name_input
+      session[:success] = "Welcome to CMS!"
+      redirect "/"
+   else
+     
+      session[:error] = "Your username and password are wrong"
+      status 422 # The 422 (Unprocessable Entity) status code means the server understands the content 
+      erb :sign_in, layout: :layout
+   end
+end
+
+##################################################################################
+# sign out
+post "/users/signout" do
+  session[:user] = nil
+  session[:success] = "You have been successfully signed out"
+  redirect "/users/signin"
+end
+
 
 # upload image
 get "/upload_image" do
@@ -337,36 +402,6 @@ post "/:name/destroy" do
   
 end
 
-# render the sign in page
-get "/users/signin" do
-  erb :sign_in, layout: :layout
-end
-
-# sign in check
-post "/users/signin" do
-  # users = {"admin" => "secret", "kathy" => 123}
-   user_name_input = params[:username]
-   password_input = params[:password]
-   
-   
-   if user_valid?(password_input, user_name_input)
-     
-      session[:user] = user_name_input
-      session[:success] = "Welcome to CMS!"
-      redirect "/"
-   else
-      session[:error] = "Your username and password are wrong"
-      status 422 # The 422 (Unprocessable Entity) status code means the server understands the content 
-      erb :sign_in, layout: :layout
-   end
-end
-
-# sign out
-post "/users/signout" do
-  session[:user] = nil
-  session[:success] = "You have been successfully signed out"
-  redirect "/users/signin"
-end
 
 # duplicate the file
 post "/:name/duplicate" do
@@ -392,26 +427,3 @@ post "/:name/duplicate" do
   redirect "/"
 end
 
-# user sign up
-get "/users/signup" do 
-  erb :sign_up, layout: :layout
-end
-
-post "/users/signup_check" do
-  if params[:password] != params[:password_again]
-     session[:error] = "The passwords you put in are not the same."
-     status 422
-     erb :sign_up, layout: :layout
-  elsif params[:password].length < 6
-     session[:error] = "The passwords must be at least 6 characters long."
-     status 422
-     erb :sign_up, layout: :layout
-  elsif params[:username].strip.empty?
-     session[:error] = "Please put in a valid username."
-     status 422
-     erb :sign_up, layout: :layout
-  else
-     redirect "/users/signin"
-  end
-
-end
