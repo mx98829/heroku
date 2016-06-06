@@ -1,2 +1,15 @@
+---
 kathy: "$2a$10$0EPUO4oHCdN7hYNdu918PO5vsAv4BQ7O2xRB25q1.lpk7re3FYgWG"
-admin: "secret"
+admin: secret
+derek: !ruby/string:BCrypt::Password
+  str: "$2a$10$TZHQORt/fCv.LUFInzBsBuSSBvv4duGvDHiH0coIV6d6PV.ev6gCu"
+  version: 2a
+  cost: 10
+  salt: "$2a$10$TZHQORt/fCv.LUFInzBsBu"
+  checksum: SSBvv4duGvDHiH0coIV6d6PV.ev6gCu
+katy: !ruby/string:BCrypt::Password
+  str: "$2a$10$N0qd8CcoLrnRI4OXg7Yf6ON5Xa/4vehDT38gB5H7wS/H.J/bDRU.O"
+  version: 2a
+  cost: 10
+  salt: "$2a$10$N0qd8CcoLrnRI4OXg7Yf6O"
+  checksum: N5Xa/4vehDT38gB5H7wS/H.J/bDRU.O

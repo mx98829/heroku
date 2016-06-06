@@ -14,13 +14,9 @@ configure do
   set :session_secret, 'secret' #set secret the name, every application works after restarting
 end
 
-before do
-    if ENV["RACK_ENV"] == "test"
-      @users = YAML.load_file("test/users.yaml")
-    else
-      @users = YAML.load_file("users.yaml")
-    end
-end
+
+
+ 
 
 def path(source)
   if ENV["RACK_ENV"] == "test"
@@ -43,7 +39,30 @@ def image_path
 end
   
 helpers do
+  def load_users_file
+    if ENV["RACK_ENV"] == "test"
+      YAML.load_file("test/users.yaml")
+    else
+      YAML.load_file("users.yaml")
+    end
+  end
   
+  def add_user_to_file(username, password)
+    if ENV["RACK_ENV"] == "test"
+      users = YAML.load_file("test/users.yaml")
+    else
+      users = YAML.load_file("users.yaml")
+    end
+    users[username] = password
+    
+    if ENV["RACK_ENV"] == "test"
+      File.open("test/users.yaml", 'w') {|f| f.write users.to_yaml } #Store
+    else
+      File.open("users.yaml", 'w') {|f| f.write users.to_yaml } #Store
+    end
+    
+    
+  end
 
   def  load_file_names(file_path)
     Dir.glob(File.join(file_path, "*")).map { |path| File.basename(path)}
@@ -122,15 +141,15 @@ helpers do
   end
   
   def user_valid? (password, username)
-    @users.has_key?(username) && 
+    load_users_file.has_key?(username) && 
     
-    BCrypt::Password.new(@users[username]) == password
+    BCrypt::Password.new(load_users_file[username]) == password
     # BCrypt::Password.create(password_typed) == @user[username]
   end
   
   # def user_valid?(username, password)
-  #   if @users.key?(username)
-  #     bcrypt_password = BCrypt::Password.new(@users[username])
+  #   if load_users_file.key?(username)
+  #     bcrypt_password = BCrypt::Password.new(load_users_file[username])
   #     bcrypt_password == password
   #   else
   #     false
@@ -189,14 +208,10 @@ post "/users/signup_check" do
      status 422
      erb :sign_up, layout: :layout
   else
-     
+    username = params[:username]
     bcrypt_password = BCrypt::Password.create(params[:password])
-    if ENV["RACK_ENV"] == "test"
-      @users[params[:username]] = bcrypt_password
-    else
-      @users[params[:username]] = bcrypt_password
-    end
-    
+    add_user_to_file(username, bcrypt_password)
+     
     redirect "/users/signin"
   end
 end
