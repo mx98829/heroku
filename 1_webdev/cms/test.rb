@@ -17,9 +17,9 @@ root = File.expand_path("..", __FILE__)
 p File.join(root, "test")
 
  
-p BCrypt::Password.create(123)
+p BCrypt::Password.create(123456)
  
-# FileUtils.cp("image_source/image1.md", "data/image1.md")
-# Dir.mkdir(File.join("history/", "fut"))
+# # FileUtils.cp("image_source/image1.md", "data/image1.md")
+# # Dir.mkdir(File.join("history/", "fut"))
 
-p File.join("a", "/b")
+# p File.join("a", "/b")

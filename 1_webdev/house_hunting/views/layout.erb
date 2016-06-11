@@ -1,0 +1,14 @@
+<head>
+  <title>househunting</title>
+</head>
+
+<body>
+  <h2> House Hunting</h2>
+  
+    <% if session[:message] %>
+      <%= session.delete(:message) %>
+    <% end%>
+ 
+  
+  <%= yield %>
+</body>

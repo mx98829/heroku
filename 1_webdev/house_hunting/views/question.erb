@@ -1,0 +1,14 @@
+<n2>Please put in the house information below</n2>
+<ul>
+<% @property_list.keys.each do |question| %>
+    <h2><li><%=question %></li></h2>
+    <form action= "/" method= "post">
+      <input name= "<%=question %>">
+<%end%>
+    <div>
+      <P></P>
+      <button type ="submit">submit</button>
+    </div>
+    </form>
+</ul>
+ 

@@ -1,0 +1,14 @@
+<head>
+    
+</head>
+
+<body>
+    <h2> Guess the Number</h2>
+    <% if session[:message] %>
+    
+        <%= session.delete(:message) %>
+    <% end %>
+
+
+    <%=yield %>
+</body>

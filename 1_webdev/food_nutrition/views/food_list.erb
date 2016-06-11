@@ -1,0 +1,6 @@
+<h3> Food nutrition list</h3>
+<% @food_list.each do |key, value| %>
+  <ul>
+  <li><%=key%>: <%=value.join(", ")%></li>
+  </ul>
+<% end %>

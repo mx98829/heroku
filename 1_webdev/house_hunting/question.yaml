@@ -1,0 +1,18 @@
+---
+test: {}
+38:
+  rent: fff
+  address: g
+  size: ffff
+  neighborhood: ffff
+  walkscore: ffff
+  notes: ffff
+  phonenumber: ffff
+39:
+  rent: gg
+  address: ddd
+  size: gg
+  neighborhood: gg
+  walkscore: gg
+  notes: gg
+  phonenumber: gg

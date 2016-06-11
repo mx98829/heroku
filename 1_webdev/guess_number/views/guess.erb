@@ -1,0 +1,18 @@
+<form action= "/check_result" method="post">
+  <p>
+    <label>Bet:
+      <input name="bet" type="text" />
+    </label>
+  </p>
+  <p> You have $<%=session[:money]%></p>
+  <p>
+    <button name="guess" value="1">Guess 1</button>
+    <button name="guess" value="2">Guess 2</button>
+    <button name="guess" value="3">Guess 3</button>
+  </p>
+</form>
+
+<form action = "/" method = "post">
+    <button type = "submit"> Replay</button>
+</form>
+

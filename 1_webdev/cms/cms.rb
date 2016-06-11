@@ -16,8 +16,6 @@ end
 
 
 
- 
-
 def path(source)
   if ENV["RACK_ENV"] == "test"
     File.expand_path("../test/#{source}", __FILE__)
@@ -178,6 +176,16 @@ helpers do
     arr.map {|x| x.join("_")}.join(".")
   end
 end
+
+# def render_index
+#   erb :index, layout: :layout
+# end
+
+
+# get "/test" do
+#   @name = load_file_names(data_path)
+#   render_index
+# end
 
 # index page
 get "/" do

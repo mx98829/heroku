@@ -1,0 +1,14 @@
+<a href="/result"> Back to the list  </a>
+
+<ul>
+<% session[:input][@id].each do |question, value| %>
+    <h2><li><%=question %></li></h2>
+    <form action= "/<%=@id %>" method= "post">
+      <input name= "<%=question %>" value= <%=value %>>
+<%end%>
+    <div>
+      <P></P>
+      <button type ="submit">Save</button>
+    </div>
+    </form>
+</ul>

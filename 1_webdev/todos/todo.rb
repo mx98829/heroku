@@ -82,12 +82,12 @@ helpers do # both accessible in view and rb. if not put in views, dont need to b
   end
 
   def load_list(id)
-    list = session[:lists].find{ |list| list[:id] == id }
+    list = session[:lists].find{ |l| l[:id] == id }
     return list if list
   
     session[:error] = "The specified list was not found."
     redirect "/lists"
-    halt
+
   end
 end
 
